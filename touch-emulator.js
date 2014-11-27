@@ -290,10 +290,12 @@
     /**
      * TouchEmulator initializer
      */
-    function TouchEmulator() {
+    function TouchEmulator(options) {
         if (hasTouchSupport()) {
             return;
         }
+
+        TouchEmulator.options = options;
 
         fakeTouchSupport();
 
@@ -324,8 +326,9 @@
     TouchEmulator.template = function(touch) {
         var size = 30;
         var transform = 'translate('+ (touch.clientX-(size/2)) +'px, '+ (touch.clientY-(size/2)) +'px)';
-        return {
+        var template = {
             position: 'fixed',
+            zIndex: 9999,
             left: 0,
             top: 0,
             background: '#fff',
@@ -345,7 +348,45 @@
             webkitTransform: transform,
             mozTransform: transform,
             transform: transform
+        };
+
+        if (TouchEmulator.options && typeof TouchEmulator.options == 'object') {
+            if (TouchEmulator.options.theme) {
+                switch (TouchEmulator.options.theme) {
+                    case 'dark':
+                        template.background = '#111';
+                        template.border = 'solid 1px #000';
+                        break;
+
+                    case 'red':
+                        template.background = '#f00';
+                        template.border = 'solid 1px #900';
+                        break;
+
+                    case 'blue':
+                        template.background = '#00f';
+                        template.border = 'solid 1px #009';
+                        break;
+                }
+            }
+            if (TouchEmulator.options.background) {
+                template.background = TouchEmulator.options.background;
+            }
+            if (TouchEmulator.options.border) {
+                template.border = TouchEmulator.options.border;
+            }
+            if (TouchEmulator.options.opacity) {
+                template.opacity = TouchEmulator.options.opacity;
+            }
+            if (TouchEmulator.options.width) {
+                template.width = TouchEmulator.options.width;
+            }
+            if (TouchEmulator.options.height) {
+                template.height = TouchEmulator.options.height;
+            }
         }
+
+        return template;
     };
 
     // export
